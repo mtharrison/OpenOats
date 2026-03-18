@@ -78,7 +78,11 @@ The first run downloads the local speech model (~600 MB).
 
 ## Knowledge base
 
-Point the app at a folder of Markdown or plain text files. That's it. OpenOats chunks, embeds, and caches them locally in `~/Library/Application Support/OpenOats/kb_cache.json`. That file is created after the first successful knowledge-base indexing pass, so it may not exist yet if you have not indexed any files, the folder is empty, or embedding has not succeeded yet. If indexing succeeded but the cache file is still missing, check Console.app for `KnowledgeBase` messages from the `com.openoats` subsystem to see cache load/save errors. When the conversation shifts, it searches your notes and only surfaces what's actually relevant.
+Point the app at a folder of Markdown or plain text files. That's it. OpenOats chunks, embeds, and caches them locally in `~/Library/Application Support/OpenOats/kb_cache.json`.
+
+That file is created after the first successful knowledge-base indexing pass, so it may not exist yet if you have not indexed any files, the folder is empty, or embedding has not succeeded yet. If indexing succeeded but the cache file is still missing, check Console.app for `KnowledgeBase` messages from the `com.openoats` subsystem to see cache load/save errors.
+
+When the conversation shifts, it searches your notes and only surfaces what's actually relevant.
 
 Works well with meeting prep docs, research notes, pitch decks, competitive analysis, customer briefs — anything you'd want at your fingertips during a call.
 
