@@ -1,5 +1,6 @@
 import Foundation
 import CryptoKit
+import os
 
 /// A chunk of text from a knowledge base document.
 struct KBChunk: Codable, Sendable {
@@ -25,6 +26,7 @@ final class KnowledgeBase {
     private(set) var isIndexed = false
     private(set) var fileCount = 0
     private(set) var indexingProgress: String = ""
+    private nonisolated static let log = Logger(subsystem: "com.openoats", category: "KnowledgeBase")
 
     private let settings: AppSettings
     private let voyageClient = VoyageClient()
@@ -494,16 +496,24 @@ final class KnowledgeBase {
     }
 
     private nonisolated func loadCache() -> KBCache {
-        guard let data = try? Data(contentsOf: Self.cacheURL()),
-              let cache = try? JSONDecoder().decode(KBCache.self, from: data) else {
+        do {
+            let data = try Data(contentsOf: Self.cacheURL())
+            return try JSONDecoder().decode(KBCache.self, from: data)
+        } catch CocoaError.fileReadNoSuchFile {
+            return KBCache(entries: [:])
+        } catch {
+            Self.log.error("Failed to load KB cache at \(Self.cacheURL().path, privacy: .public): \(error.localizedDescription, privacy: .public)")
             return KBCache(entries: [:])
         }
-        return cache
     }
 
     private nonisolated func saveCache(_ cache: KBCache) {
-        guard let data = try? JSONEncoder().encode(cache) else { return }
-        try? data.write(to: Self.cacheURL(), options: .atomic)
+        do {
+            let data = try JSONEncoder().encode(cache)
+            try data.write(to: Self.cacheURL(), options: .atomic)
+        } catch {
+            Self.log.error("Failed to save KB cache at \(Self.cacheURL().path, privacy: .public): \(error.localizedDescription, privacy: .public)")
+        }
     }
 
     // MARK: - Hashing
